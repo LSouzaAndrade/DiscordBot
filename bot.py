@@ -53,7 +53,7 @@ def get_guild_id_by_nick(status, nick):
 
 def fuzzy_analysis(status, heard_nickname):
     online_nicknames = [user_info["display_name"] for user_info in status.values()]
-    matches = [(nome, fuzz.ratio(heard_nickname, nome)) for nome in online_nicknames]
+    matches = [(nome, fuzz.ratio(heard_nickname, nome.lower())) for nome in online_nicknames]
     filtered_matches = [match for match in matches if match[1] >= 65]
     return filtered_matches
 
