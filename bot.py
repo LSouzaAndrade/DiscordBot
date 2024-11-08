@@ -95,19 +95,20 @@ async def move_user(guild_id: int, member_id: int, target_channel_id: int):
 
 @app.post("/disconnect_user/")
 async def disconnect_user_endpoint(request: Request):
-    
     try:
-        response = 'Qual o comando a ser executado?'
         data = await request.json()
-        if data['request']['type'] != 'LaunchRequest':
+        print(str(data))
+        if data['request']['type'] == 'LaunchRequest':
+            response = 'Qual o comando a ser executado?'
+        elif data['request']['type'] == 'IntentRequest':
             status = get_status()
             nickname = data['request']['intent']['slots']['NomeUsuario']['slotValue']['value']
             filtered_nicks = fuzzy_analysis(status, nickname)
             server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
             member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
             response = await disconnect_user(server_id, member_id)
-
-
+        else:
+            response = 'Intent não identificado'
 
         return JSONResponse(content={
             "version": "1.0",
