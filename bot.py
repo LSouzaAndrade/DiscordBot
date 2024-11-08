@@ -4,7 +4,8 @@ import os
 import uvicorn
 from discord.ext import commands
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fuzzywuzzy import fuzz
 
 load_dotenv()
@@ -93,14 +94,28 @@ async def move_user(guild_id: int, member_id: int, target_channel_id: int):
         return f'Servidor {guild_id} não encontrado.'
 
 @app.post("/disconnect_user/")
-async def disconnect_user_endpoint(payload):
-    print(str(payload))
-    status = get_status()
-    filtered_nicks = fuzzy_analysis(status, payload.member_nick)
-    server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
-    member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
-    response = await disconnect_user(server_id, member_id)
-    return {"message": response}
+async def disconnect_user_endpoint(request: Request):
+    try:
+        data = await request.json()
+        status = get_status()
+        nickname = data['request']['intent']['slots']['NomeUsuario']['slotValue']['value']
+        filtered_nicks = fuzzy_analysis(status, nickname)
+        server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
+        member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
+        response = await disconnect_user(server_id, member_id)
+        return JSONResponse(content={
+            "version": "1.0",
+            "response": {
+                "outputSpeech": {
+                    "type": "PlainText",
+                    "text": response
+                },
+                "shouldEndSession": True
+            }
+        })
+    except Exception as e:
+        print("Erro ao processar a requisição:", str(e))
+        return JSONResponse(status_code=422, content={"message": "Erro ao processar a requisição"})
 
 @app.post("/move_user/")
 async def move_user_endpoint(payload):
