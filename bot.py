@@ -18,6 +18,8 @@ intents.voice_states = True
 bot = commands.Bot(command_prefix='.', intents=intents)
 
 app = FastAPI()
+config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+server = uvicorn.Server(config)
 
 class ActionRequest(BaseModel):
     guild_id: int
@@ -96,13 +98,9 @@ async def move_user_endpoint(action: ActionRequest):
     else:
         return {"error": "É necessário fornecer o ID do canal de destino"}
 
-def start_fastapi():
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
-    server = uvicorn.Server(config)
-    return server.serve()
 
 async def main():
-    await asyncio.gather(bot.start(BOT_TOKEN), start_fastapi())
+    await asyncio.gather(bot.start(BOT_TOKEN), server.serve())
 
 if __name__ == "__main__":
     asyncio.run(main())
