@@ -97,6 +97,7 @@ async def move_user(guild_id: int, member_id: int, target_channel_id: int):
 async def disconnect_user_endpoint(request: Request):
     try:
         data = await request.json()
+        print(str(data))
         if data['request']['type'] == 'LaunchRequest':
             response = 'Qual o comando a ser executado?'
         elif data['request']['type'] == 'IntentRequest':
