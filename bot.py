@@ -42,13 +42,13 @@ def get_status():
 def get_user_id_by_nick(status, nick):
     for user_id, user_info in status.items():
         if user_info["display_name"] == nick:
-            return user_id
+            return int(user_id)
     return None
 
 def get_guild_id_by_nick(status, nick):
     for user_info in status.values():
         if user_info["display_name"] == nick:
-            return user_info["guild_id"]
+            return int(user_info["guild_id"])
     return None
 
 def fuzzy_analysis(status, heard_nickname):
@@ -95,6 +95,7 @@ async def move_user(guild_id: int, member_id: int, target_channel_id: int):
 
 @app.post("/disconnect_user/")
 async def disconnect_user_endpoint(request: Request):
+    
     try:
         response = 'Qual o comando a ser executado?'
         data = await request.json()
@@ -105,6 +106,9 @@ async def disconnect_user_endpoint(request: Request):
             server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
             member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
             response = await disconnect_user(server_id, member_id)
+
+
+
         return JSONResponse(content={
             "version": "1.0",
             "response": {
@@ -115,20 +119,10 @@ async def disconnect_user_endpoint(request: Request):
                 "shouldEndSession": False
             }
         })
+    
     except Exception as e:
         print("Erro ao processar a requisição:", str(e))
         return JSONResponse(status_code=422, content={"message": "Erro ao processar a requisição"})
-
-@app.post("/move_user/")
-async def move_user_endpoint(payload):
-    if payload.target_channel_id:
-        status = get_status()
-        nicks = [user_info["display_name"] for user_info in status.values()]
-        response = await move_user(payload.guild_id, payload.member_id, payload.target_channel_id)
-        return {"message": response}
-    else:
-        return {"error": "É necessário fornecer o ID do canal de destino"}
-
 
 async def main():
     await asyncio.gather(bot.start(BOT_TOKEN), server.serve())
