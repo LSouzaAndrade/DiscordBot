@@ -97,13 +97,15 @@ async def move_user(guild_id: int, member_id: int, target_channel_id: int):
 async def disconnect_user_endpoint(request: Request):
     try:
         data = await request.json()
-        print(str(data))
         if data['request']['type'] == 'LaunchRequest':
             response = 'Qual o comando a ser executado?'
         elif data['request']['type'] == 'IntentRequest':
             status = get_status()
+            print('Status: ',str(status))
             nickname = data['request']['intent']['slots']['NomeUsuario']['slotValue']['value']
+            print('Nick informado pela Alexa: ', str(nickname))
             filtered_nicks = fuzzy_analysis(status, nickname)
+            print('Nicks filtrados: ', filtered_nicks)
             server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
             member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
             response = await disconnect_user(server_id, member_id)
