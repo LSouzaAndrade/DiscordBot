@@ -112,7 +112,7 @@ async def disconnect_user_endpoint(request: Request):
                     "type": "PlainText",
                     "text": response
                 },
-                "shouldEndSession": True
+                "shouldEndSession": False
             }
         })
     except Exception as e:
