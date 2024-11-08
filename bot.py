@@ -98,13 +98,9 @@ async def disconnect_user_endpoint(request: Request):
     try:
         response = 'Qual o comando a ser executado?'
         data = await request.json()
-        if data['request']['intent']['name'] == 'KickUserIntent':
-            status = get_status()
-            nickname = data['request']['intent']['slots']['NomeUsuario']['slotValue']['value']
-            filtered_nicks = fuzzy_analysis(status, nickname)
-            server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
-            member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
-            response = await disconnect_user(server_id, member_id)
+        print(data['request']['intent']['name'])
+
+
         return JSONResponse(content={
             "version": "1.0",
             "response": {
@@ -135,3 +131,12 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+"""     if data['request']['intent']['name'] == 'KickUserIntent':
+        status = get_status()
+        nickname = data['request']['intent']['slots']['NomeUsuario']['slotValue']['value']
+        filtered_nicks = fuzzy_analysis(status, nickname)
+        server_id = get_guild_id_by_nick(status, filtered_nicks[0][0])
+        member_id = get_user_id_by_nick(status, filtered_nicks[0][0])
+        response = await disconnect_user(server_id, member_id) """
