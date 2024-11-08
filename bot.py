@@ -98,7 +98,7 @@ async def disconnect_user_endpoint(request: Request):
     try:
         response = 'Qual o comando a ser executado?'
         data = await request.json()
-        print(data['request']['intent']['name'])
+        print(data['request'])
 
 
         return JSONResponse(content={
