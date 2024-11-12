@@ -16,7 +16,7 @@ async def command_parser(request: Request):
                     case 'MuteUserIntent':
                         ...
                     case 'KickUserIntent':
-                        response = kick_user(data['request']['intent']['name'])
+                        response = kick_user(data['request']['intent']['slots']['NomeUsuario']['value'])
                         shouldEndSession = False
                     case 'AMAZON.HelpIntent':
                         response = 'O assistente de servidor pode expulsar, mover e silenciar usuários. Além de tocar música.'
