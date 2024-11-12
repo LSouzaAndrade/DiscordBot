@@ -11,15 +11,19 @@ async def command_parser(request: Request):
                 shouldEndSession = False
             case 'IntentRequest':
                 match data['request']['intent']['name']:
-                    case 'KickUserIntent':
+                    case 'MoveUserIntent':
                         ...
+                    case 'MuteUserIntent':
+                        ...
+                    case 'KickUserIntent':
+                        response = kick_user(data['request']['intent']['name'])
+                        shouldEndSession = False
                     case 'AMAZON.HelpIntent':
                         response = 'O assistente de servidor pode expulsar, mover e silenciar usuários. Além de tocar música.'
                         shouldEndSession = False
-                    case 'AMAZON.StopIntent' | 'AMAZON.CancelIntent':
+                    case 'AMAZON.StopIntent' | 'AMAZON.CancelIntent' | 'AMAZON.NavigateHomeIntent':
                         response = 'Assistente de servidor finalizado.'
                         shouldEndSession = True
-
             case 'SessionEndedRequest':
                 response = 'Assistente de servidor finalizado.'
                 shouldEndSession = True
