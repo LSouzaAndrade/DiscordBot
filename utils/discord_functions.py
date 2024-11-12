@@ -1,12 +1,11 @@
 from fuzzywuzzy import fuzz
 
-bot = None
-
 def importBot():
     from botAPI import bot
+    return bot
 
 def get_online_users():
-    importBot()
+    bot = importBot()
     status = {}
     for guild in bot.guilds:
         for channel in guild.voice_channels:
