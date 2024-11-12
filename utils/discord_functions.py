@@ -16,6 +16,7 @@ def get_online_users():
                     "guild_id": str(guild.id)
                 }
                 status[str(member.id)] = member_info
+    print ("Status: ", status)
     return status
 
 def get_user_id(status, nickname):
@@ -34,13 +35,16 @@ def fuzzy_analysis(status, heard_nickname):
     online_nicknames = [user_info["display_name"] for user_info in status.values()]
     matches = [(nome, fuzz.ratio(heard_nickname, nome.lower())) for nome in online_nicknames]
     filtered_matches = [match for match in matches if match[1] >= 65]
+    print("Filtered matches: ", filtered_matches)
     return filtered_matches
 
 async def kick_user(nickname: str):
+    bot = importBot()
     status = get_online_users()
     nickname = fuzzy_analysis(status, nickname)[0][0]
     guild_id = get_guild_id(status, nickname)
     member_id = get_user_id(status, nickname)
+    print("Kick Infos:", nickname, guild_id, member_id)
     guild = bot.get_guild(guild_id)
     if guild:
         member = guild.get_member(member_id)
