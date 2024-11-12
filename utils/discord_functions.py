@@ -1,3 +1,3 @@
-from botAPI import bot
-
+def importBot():
+    from botAPI import bot
 
