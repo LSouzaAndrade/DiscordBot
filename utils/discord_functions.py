@@ -1,11 +1,10 @@
-from fuzzywuzzy import fuzz
+
 
 def importBot():
     from botAPI import bot
     return bot
 
 def get_online_users():
-    bot = importBot()
     status = {}
     for guild in bot.guilds:
         for channel in guild.voice_channels:
@@ -39,7 +38,6 @@ def fuzzy_analysis(status, heard_nickname):
     return filtered_matches
 
 async def kick_user(nickname: str):
-    bot = importBot()
     status = get_online_users()
     nickname = fuzzy_analysis(status, nickname)[0][0]
     guild_id = get_guild_id(status, nickname)
