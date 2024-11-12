@@ -1,5 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from utils.discord_functions import *
 
 async def command_parser(request: Request):
     try:
@@ -9,7 +10,16 @@ async def command_parser(request: Request):
                 response = 'Assistente de servidor iniciado.'
                 shouldEndSession = False
             case 'IntentRequest':
-                ...
+                match data['request']['intent']['name']:
+                    case 'KickUserIntent':
+                        ...
+                    case 'AMAZON.HelpIntent':
+                        response = 'O assistente de servidor pode expulsar, mover e silenciar usuários. Além de tocar música.'
+                        shouldEndSession = False
+                    case 'AMAZON.StopIntent' | 'AMAZON.CancelIntent':
+                        response = 'Assistente de servidor finalizado.'
+                        shouldEndSession = True
+
             case 'SessionEndedRequest':
                 response = 'Assistente de servidor finalizado.'
                 shouldEndSession = True

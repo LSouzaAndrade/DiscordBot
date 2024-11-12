@@ -5,7 +5,7 @@ import uvicorn
 from discord.ext import commands
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
-from utils import *
+from utils.aux_functions import command_parser
 
 load_dotenv()
 BOT_TOKEN = os.getenv('BOT_TOKEN')
@@ -23,7 +23,7 @@ server = uvicorn.Server(config)
 
 @app.post("/")
 async def command_parser_endpoint(request: Request):
-    return command_parser(request)
+    return await command_parser(request)
 
 @bot.event
 async def on_ready():
